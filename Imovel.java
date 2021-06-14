@@ -75,18 +75,21 @@ public class Imovel implements Serializable {
             BufferedReader br = new BufferedReader(fr);
 
             String l = "";
+            String[] c = new String[5];
             while (br.ready()) {
                 l = br.readLine();
-                System.out.println(l.split(""));
-                System.exit(1);
-                // i.referencia = c[0];
-                // i.tipo = c[1];
-                // i.quartos = c[2];
-                // i.bairro = c[3];
-                // i.valor = c[4];
+                c = l.split(",");
+                if(!c[0].equals("Referencia")) {
+                    i.referencia = Integer.parseInt(c[0]);
+                    i.tipo = c[1];
+                    i.quartos = Integer.parseInt(c[2]);
+                    i.bairro = c[3];
+                    i.valor = Float.parseFloat(c[4]);
+                }
             }
             br.close();
             fr.close();
+            System.out.println(i.referencia+"\n"+i.tipo+"\n"+i.quartos+"\n"+i.bairro+"\n"+i.valor);
         } catch (final FileNotFoundException e) {
             System.out.println("Arquivo não encontrado!");
         } catch (final IOException e) {
