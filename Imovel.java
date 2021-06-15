@@ -104,29 +104,41 @@ public class Imovel implements Serializable {
     }
 
     private static void ListarImoveis() {
-        final ObjectInputStream input = null;
-        try {
-            // input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.csv")));
-            while (true) {
-                final Imovel i = (Imovel) input.readObject();
-                System.out.printf("%d - %10.2f\n", i.referencia, i.valor);
-                return;
-            }
-        } catch (final EOFException e) {
-            System.out.println("Fim dos registros");
-        } catch (final ClassNotFoundException e) {
-            System.out.println("Tipo de objeto inválido");
-        } catch (final IOException e) {
-            System.out.println("Erro de leitura no arquivo");
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (final IOException e) {
-                    System.out.println("Erro ao fechar o arquivo!");
-                }
-            }
+        File f = new File(NOME_ARQUIVO);
+        FileReader fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
+        br.readLine(); // cabeçalho
+        System.out.println("|Referencia|Valor   |");
+        while (br.ready()) {
+            String[] tokens = br.readline().split(",");
+            System.out.printf("|%-10s|%10.2f|\n", tokens[0], Float.parseFloat(tokens[4]));
         }
+        br.close();
+        fr.close();
+        // To em duvida se e esse comentado ou o de cima
+        // ObjectInputStream input = null;
+        // try {
+        //     // input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.csv")));
+        //     while (true) {
+        //         final Imovel i = (Imovel) input.readObject();
+        //         System.out.printf("%d - %10.2f\n", i.referencia, i.valor);
+        //         return;
+        //     }
+        // } catch (final EOFException e) {
+        //     System.out.println("Fim dos registros");
+        // } catch (final ClassNotFoundException e) {
+        //     System.out.println("Tipo de objeto inválido");
+        // } catch (final IOException e) {
+        //     System.out.println("Erro de leitura no arquivo");
+        // } finally {
+        //     if (input != null) {
+        //         try {
+        //             input.close();
+        //         } catch (final IOException e) {
+        //             System.out.println("Erro ao fechar o arquivo!");
+        //         }
+        //     }
+        // }
     }
 
 	private static void MostrarDetalheDoImovel(String ref) throws IOException {
@@ -135,8 +147,21 @@ public class Imovel implements Serializable {
         FileReader fr = new FileReader(f);
         BufferedReader br = new BufferedReader(fr);
         while (br.ready()) {
-            String[] tokens = br.readLine().split()
+            String[] tokens = br.readLine().split(",");
+            if (ref.equals(tokens[0])) {
+                System.out.println("Tipo: " + tokens[1]);
+                System.out.println("Quartos: " + tokens[2]);
+                System.out.println("Bairros: " + tokens[3]);
+                System.out.printf("Valor: R$ %.2f\n", Float.parseFloat(tokens[4]));
+                achou = true;
+                break;
+            }
         }
+        if (!achou) {
+            System.out.println("\nImovel nao encontrado!");
+        }
+        br.close();
+        fr.close();
 	}
 
 	private static void InserirNovoImovel() {
