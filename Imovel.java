@@ -90,9 +90,9 @@ public class Imovel implements Serializable {
             br.close();
             fr.close();
             System.out.println(i.referencia+"\n"+i.tipo+"\n"+i.quartos+"\n"+i.bairro+"\n"+i.valor);
-        } catch (final FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("Arquivo não encontrado!");
-        } catch (final IOException e) {
+        } catch (IOException e) {
             System.out.println("Erro de leitura/escrita");
         }
     }
