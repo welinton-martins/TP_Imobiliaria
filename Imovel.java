@@ -20,6 +20,8 @@ public class Imovel implements Serializable {
 	private int quartos;
 	private String bairro;
 	private float valor;
+
+    public static final String NOME_ARQUIVO = "." + "/imovel.csv";
 	
 	public static void main(final String[] args) {
         // Scanner in = new Scanner(System.in);
@@ -135,7 +137,19 @@ public class Imovel implements Serializable {
 		
 	}
 
-	private static void RemoverImovel() {
-		
+	private static void RemoverImovel(String ref) throws IOException {
+		Files.copy(Path.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
+        File f = new File("copia.csv");
+        FileReader fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
+        FileWriter fw = new FileWriter(NOME_ARQUIVO);
+        BufferedWriter bw = new BufferedWriter(fw);
+        boolean achou = false;
+        while (br.ready()) {
+            String[] tokens = br.readLine().split(",");
+            if (!ref.equals(tokens[0])) {
+                bw.write(String.format("%s,%s,%s,%s,%s\n", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
+            }
+        }
 	}
 }
