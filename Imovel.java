@@ -129,12 +129,35 @@ public class Imovel implements Serializable {
         }
     }
 
-	private static void MostrarDetalheDoImovel() {
-
+	private static void MostrarDetalheDoImovel(String ref) throws IOException {
+        boolean achou = false;
+        File f = new File(NOME_ARQUIVO);
+        FileReader fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
+        while (br.ready()) {
+            String[] tokens = br.readLine().split()
+        }
 	}
 
 	private static void InserirNovoImovel() {
-		
+		FileWriter fw = new FileWriter(NOME_ARQUIVO, true);
+        BufferedReader bw = new BufferedWriter(fw);
+        Scanner in = new Scanner(System.in);
+        System.out.print("Referencia: ");
+        int ref = in.nextInt();
+        System.out.print("Tipo");
+        in.nextLine();
+        String tipo = in.nextLine();
+        System.out.print("Quartos: ");
+        int quartos = in.nextInt();
+        System.out.print("Bairro: ");
+        in.nextLine();
+        String bairoo = in.nextLine();
+        System.out.print("Valor: R$ ");
+        float valor = in.nextFloat();
+        bw.write(String.format("%d;%s;%d;%s;%.2f\n", ref, tipo, quartos, bairro, valor));
+        bw.close();
+        fw.close();
 	}
 
 	private static void RemoverImovel(String ref) throws IOException {
@@ -149,7 +172,16 @@ public class Imovel implements Serializable {
             String[] tokens = br.readLine().split(",");
             if (!ref.equals(tokens[0])) {
                 bw.write(String.format("%s,%s,%s,%s,%s\n", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
+            } else {
+                achou = true;
             }
         }
+        if (!achou) {
+            System.out.println("\nImovel nao encontrado!");
+        }
+        br.close();
+        fr.close();
+        bw.close();
+        br.close();
 	}
 }
