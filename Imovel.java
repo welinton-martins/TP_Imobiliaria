@@ -62,6 +62,7 @@ public class Imovel implements Serializable {
         // }
         // } while (op != 0);
         // in.close();
+        InserirNovoImovel();
     }
 
     private static void ImportarImoveis() {
@@ -169,12 +170,10 @@ public class Imovel implements Serializable {
 	private static void InserirNovoImovel() {
         Imovel i = new Imovel();
         try {
-            // FileWriter fw = new FileWriter(NOME_ARQUIVO, true);
-            // BufferedWriter bw = new BufferedWriter(fw);
             Scanner in = new Scanner(System.in);
             System.out.print("Referencia: ");
             i.referencia = in.nextInt();
-            System.out.print("Tipo");
+            System.out.print("Tipo: ");
             in.nextLine();
             i.tipo = in.nextLine();
             System.out.print("Quartos: ");
@@ -198,10 +197,6 @@ public class Imovel implements Serializable {
         } catch (IOException e) {
             System.out.println("Erro de escrita no arquivo!");
         }
-
-        // bw.write(String.format("%d;%s;%d;%s;%.2f\n", i.referencia, i.tipo, i.quartos, i.bairro, i.valor));
-        // bw.close();
-        // fw.close();
 	}
 
 	private static void RemoverImovel(String ref) throws IOException {
