@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -168,26 +169,39 @@ public class Imovel implements Serializable {
 	private static void InserirNovoImovel() {
         Imovel i = new Imovel();
         try {
-
+            // FileWriter fw = new FileWriter(NOME_ARQUIVO, true);
+            // BufferedWriter bw = new BufferedWriter(fw);
+            Scanner in = new Scanner(System.in);
+            System.out.print("Referencia: ");
+            i.referencia = in.nextInt();
+            System.out.print("Tipo");
+            in.nextLine();
+            i.tipo = in.nextLine();
+            System.out.print("Quartos: ");
+            i.quartos = in.nextInt();
+            System.out.print("Bairro: ");
+            in.nextLine();
+            i.bairro = in.nextLine();
+            System.out.print("Valor: R$ ");
+            i.valor = in.nextFloat();
+            Path path = Paths.get("contas.dat");
+            if (Files.exists(path)) {
+                FileOutputStream fos = new FileOutputStream(NOME_ARQUIVO, true);
+                AppendingObjectOutputStream output = new AppendingObjectOutputStream(fos);
+                output.writeObject(i);
+                output.close();
+            } else {
+                ObjectOutputStream output = new ObjectOutputStream(Files.newOutputStream(path));
+                output.writeObject(i);
+                output.close();
+            }
+        } catch (IOException e) {
+            System.out.println("Erro de escrita no arquivo!");
         }
-		FileWriter fw = new FileWriter(NOME_ARQUIVO, true);
-        BufferedWriter bw = new BufferedWriter(fw);
-        Scanner in = new Scanner(System.in);
-        System.out.print("Referencia: ");
-        int ref = in.nextInt();
-        System.out.print("Tipo");
-        in.nextLine();
-        String tipo = in.nextLine();
-        System.out.print("Quartos: ");
-        int quartos = in.nextInt();
-        System.out.print("Bairro: ");
-        in.nextLine();
-        String bairro = in.nextLine();
-        System.out.print("Valor: R$ ");
-        float valor = in.nextFloat();
-        bw.write(String.format("%d;%s;%d;%s;%.2f\n", i.referencia, i.tipo, i.quartos, i.bairro, i.valor));
-        bw.close();
-        fw.close();
+
+        // bw.write(String.format("%d;%s;%d;%s;%.2f\n", i.referencia, i.tipo, i.quartos, i.bairro, i.valor));
+        // bw.close();
+        // fw.close();
 	}
 
 	private static void RemoverImovel(String ref) throws IOException {
