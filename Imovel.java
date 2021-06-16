@@ -20,6 +20,8 @@ public class Imovel implements Serializable {
 	private int quartos;
 	private String bairro;
 	private float valor;
+
+    public static final String NOME_ARQUIVO = "." + "/imovel.csv";
 	
 	public static void main(final String[] args) {
         // Scanner in = new Scanner(System.in);
@@ -75,21 +77,24 @@ public class Imovel implements Serializable {
             BufferedReader br = new BufferedReader(fr);
 
             String l = "";
+            String[] c = new String[5];
             while (br.ready()) {
                 l = br.readLine();
-                System.out.println(l.split(""));
-                System.exit(1);
-                // i.referencia = c[0];
-                // i.tipo = c[1];
-                // i.quartos = c[2];
-                // i.bairro = c[3];
-                // i.valor = c[4];
+                c = l.split(",");
+                if(!c[0].equals("Referencia")) {
+                    i.referencia = Integer.parseInt(c[0]);
+                    i.tipo = c[1];
+                    i.quartos = Integer.parseInt(c[2]);
+                    i.bairro = c[3];
+                    i.valor = Float.parseFloat(c[4]);
+                }
             }
             br.close();
             fr.close();
-        } catch (final FileNotFoundException e) {
+            System.out.println(i.referencia+"\n"+i.tipo+"\n"+i.quartos+"\n"+i.bairro+"\n"+i.valor);
+        } catch (FileNotFoundException e) {
             System.out.println("Arquivo não encontrado!");
-        } catch (final IOException e) {
+        } catch (IOException e) {
             System.out.println("Erro de leitura/escrita");
         }
     }
@@ -99,40 +104,109 @@ public class Imovel implements Serializable {
     }
 
     private static void ListarImoveis() {
-        final ObjectInputStream input = null;
-        try {
-            // input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.csv")));
-            while (true) {
-                final Imovel i = (Imovel) input.readObject();
-                System.out.printf("%d - %10.2f\n", i.referencia, i.valor);
-                return;
-            }
-        } catch (final EOFException e) {
-            System.out.println("Fim dos registros");
-        } catch (final ClassNotFoundException e) {
-            System.out.println("Tipo de objeto inválido");
-        } catch (final IOException e) {
-            System.out.println("Erro de leitura no arquivo");
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (final IOException e) {
-                    System.out.println("Erro ao fechar o arquivo!");
-                }
-            }
+        File f = new File(NOME_ARQUIVO);
+        FileReader fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
+        br.readLine(); // cabeçalho
+        System.out.println("|Referencia|Valor   |");
+        while (br.ready()) {
+            String[] tokens = br.readline().split(",");
+            System.out.printf("|%-10s|%10.2f|\n", tokens[0], Float.parseFloat(tokens[4]));
         }
+        br.close();
+        fr.close();
+        // To em duvida se e esse comentado ou o de cima
+        // ObjectInputStream input = null;
+        // try {
+        //     // input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.csv")));
+        //     while (true) {
+        //         final Imovel i = (Imovel) input.readObject();
+        //         System.out.printf("%d - %10.2f\n", i.referencia, i.valor);
+        //         return;
+        //     }
+        // } catch (final EOFException e) {
+        //     System.out.println("Fim dos registros");
+        // } catch (final ClassNotFoundException e) {
+        //     System.out.println("Tipo de objeto inválido");
+        // } catch (final IOException e) {
+        //     System.out.println("Erro de leitura no arquivo");
+        // } finally {
+        //     if (input != null) {
+        //         try {
+        //             input.close();
+        //         } catch (final IOException e) {
+        //             System.out.println("Erro ao fechar o arquivo!");
+        //         }
+        //     }
+        // }
     }
 
-	private static void MostrarDetalheDoImovel() {
-
+	private static void MostrarDetalheDoImovel(String ref) throws IOException {
+        boolean achou = false;
+        File f = new File(NOME_ARQUIVO);
+        FileReader fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
+        while (br.ready()) {
+            String[] tokens = br.readLine().split(",");
+            if (ref.equals(tokens[0])) {
+                System.out.println("Tipo: " + tokens[1]);
+                System.out.println("Quartos: " + tokens[2]);
+                System.out.println("Bairros: " + tokens[3]);
+                System.out.printf("Valor: R$ %.2f\n", Float.parseFloat(tokens[4]));
+                achou = true;
+                break;
+            }
+        }
+        if (!achou) {
+            System.out.println("\nImovel nao encontrado!");
+        }
+        br.close();
+        fr.close();
 	}
 
 	private static void InserirNovoImovel() {
-		
+		FileWriter fw = new FileWriter(NOME_ARQUIVO, true);
+        BufferedReader bw = new BufferedWriter(fw);
+        Scanner in = new Scanner(System.in);
+        System.out.print("Referencia: ");
+        int ref = in.nextInt();
+        System.out.print("Tipo");
+        in.nextLine();
+        String tipo = in.nextLine();
+        System.out.print("Quartos: ");
+        int quartos = in.nextInt();
+        System.out.print("Bairro: ");
+        in.nextLine();
+        String bairoo = in.nextLine();
+        System.out.print("Valor: R$ ");
+        float valor = in.nextFloat();
+        bw.write(String.format("%d;%s;%d;%s;%.2f\n", ref, tipo, quartos, bairro, valor));
+        bw.close();
+        fw.close();
 	}
 
-	private static void RemoverImovel() {
-		
+	private static void RemoverImovel(String ref) throws IOException {
+		Files.copy(Path.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
+        File f = new File("copia.csv");
+        FileReader fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
+        FileWriter fw = new FileWriter(NOME_ARQUIVO);
+        BufferedWriter bw = new BufferedWriter(fw);
+        boolean achou = false;
+        while (br.ready()) {
+            String[] tokens = br.readLine().split(",");
+            if (!ref.equals(tokens[0])) {
+                bw.write(String.format("%s,%s,%s,%s,%s\n", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
+            } else {
+                achou = true;
+            }
+        }
+        if (!achou) {
+            System.out.println("\nImovel nao encontrado!");
+        }
+        br.close();
+        fr.close();
+        bw.close();
+        br.close();
 	}
 }
