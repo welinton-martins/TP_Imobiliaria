@@ -9,7 +9,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,18 +26,6 @@ public class Imovel implements Serializable {
 
     public static final String NOME_ARQUIVO = "." + "/imovel.csv";
 
-    public class AppendingObjectOutputStream extends ObjectOutputStream {
-        public AppendingObjectOutputStream(OutputStream out) throws IOException {
-            super(out);
-        }
-
-        @Override
-        protected void writeStreamHeader() throws IOException {
-            reset();
-
-        }
-    }
-	
 	public static void main(final String[] args) {
         // Scanner in = new Scanner(System.in);
         // int op = 0;
