@@ -183,7 +183,7 @@ public class Imovel implements Serializable {
             i.bairro = in.nextLine();
             System.out.print("Valor: R$ ");
             i.valor = in.nextFloat();
-            Path path = Paths.get("contas.dat");
+            Path path = Paths.get("imovel.dat");
             if (Files.exists(path)) {
                 FileOutputStream fos = new FileOutputStream(NOME_ARQUIVO, true);
                 AppendingObjectOutputStream output = new AppendingObjectOutputStream(fos);
