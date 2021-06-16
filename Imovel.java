@@ -62,7 +62,7 @@ public class Imovel implements Serializable {
         // }
         // } while (op != 0);
         // in.close();
-        InserirNovoImovel();
+        RemoverImovel();
     }
 
     private static void ImportarImoveis() {
@@ -183,7 +183,7 @@ public class Imovel implements Serializable {
             i.bairro = in.nextLine();
             System.out.print("Valor: R$ ");
             i.valor = in.nextFloat();
-            Path path = Paths.get("imovel.dat");
+            Path path = Paths.get(NOME_ARQUIVO);
             if (Files.exists(path)) {
                 FileOutputStream fos = new FileOutputStream(NOME_ARQUIVO, true);
                 AppendingObjectOutputStream output = new AppendingObjectOutputStream(fos);
@@ -199,28 +199,35 @@ public class Imovel implements Serializable {
         }
 	}
 
-	private static void RemoverImovel(String ref) throws IOException {
-		// Files.copy(Path.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
-        // File f = new File("copia.csv");
-        // FileReader fr = new FileReader(f);
-        // BufferedReader br = new BufferedReader(fr);
-        // FileWriter fw = new FileWriter(NOME_ARQUIVO);
-        // BufferedWriter bw = new BufferedWriter(fw);
-        // boolean achou = false;
-        // while (br.ready()) {
-        //     String[] tokens = br.readLine().split(",");
-        //     if (!ref.equals(tokens[0])) {
-        //         bw.write(String.format("%s,%s,%s,%s,%s\n", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
-        //     } else {
-        //         achou = true;
-        //     }
-        // }
-        // if (!achou) {
-        //     System.out.println("\nImovel nao encontrado!");
-        // }
-        // br.close();
-        // fr.close();
-        // bw.close();
-        // br.close();
+	private static void RemoverImovel(String ref) {
+        try {
+            Files.copy(Path.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
+            input = new ObjectInputStream(Files.newInputStream(Paths.get("imoveis.bak")));
+            output = new ObjectOutputStream(Files.newOutputStream(Paths.get"imovel.csv))
+            // File f = new File("copia.csv");
+            // FileReader fr = new FileReader(f);
+            // BufferedReader br = new BufferedReader(fr);
+            // FileWriter fw = new FileWriter(NOME_ARQUIVO);
+            // BufferedWriter bw = new BufferedWriter(fw);
+            boolean achou = false;
+            while (br.ready()) {
+                String[] tokens = br.readLine().split(",");
+                if (!ref.equals(tokens[0])) {
+                    bw.write(String.format("%s,%s,%s,%s,%s\n", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
+                } else {
+                    achou = true;
+                }
+            }
+            if (!achou) {
+                System.out.println("\nImovel nao encontrado!");
+            }
+            // br.close();
+            // fr.close();
+            // bw.close();
+            // br.close();
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+        
 	}
 }
