@@ -28,43 +28,43 @@ public class Imovel implements Serializable {
 
 	public static void main(final String[] args) {
         Scanner in = new Scanner(System.in);
-        // int op = 0;
-        // do {
-        // try {
-        // System.out.println("Imobiliária");
-        // System.out.println("<1> Importar imóveis");
-        // System.out.println("<2> Exportar imóveis");
-        // System.out.println("<3> Listar imóveis");
-        // System.out.println("<4> Mostrar detalhe do imóvel");
-        // System.out.println("<5> Inserir novo imóvel");
-        // System.out.println("<6> Remover imóvel");
-        // System.out.println("<0> Sair");
-        // System.out.print("Opção: ");
-        // op = in.nextInt();
-        // switch (op) {
-        // case 1: ImportarImoveis();
-        // break;
-        // case 2: ExportarImoveis();
-        // break;
-        // case 3: ListarImoveis();
-        // break;
-        // case 4: MostrarDetalheDoImovel();
-        // break;
-        // case 5: InserirNovoImovel();
-        // break;
-        // case 6: 
-        //     System.out.print("\nRemover imóvel\nReferencia do imóvel: ");
-        //     RemoverImovel(in.nextInt());
-        //     break;
-        // case 0: break;
-        // default: System.out.println("Opção inválida!");
-        // }
-        // } catch (NoSuchElementException e) {
-        //     e.printStackTrace();
-        // }
-        // } while (op != 0);
-        System.out.print("\nRemover imóvel\nReferencia do imóvel: ");
-        RemoverImovel(in.next());
+        int op = 0;
+        do {
+            try {
+            System.out.println("Imobiliária");
+            System.out.println("<1> Importar imóveis");
+            System.out.println("<2> Exportar imóveis");
+            System.out.println("<3> Listar imóveis");
+            System.out.println("<4> Mostrar detalhe do imóvel");
+            System.out.println("<5> Inserir novo imóvel");
+            System.out.println("<6> Remover imóvel");
+            System.out.println("<0> Sair");
+            System.out.print("Opção: ");
+            op = in.nextInt();
+            switch (op) {
+                case 1: ImportarImoveis();
+                break;
+                case 2: ExportarImoveis();
+                break;
+                case 3: ListarImoveis();
+                break;
+                case 4: 
+                    System.out.print("Detalhes do Imovel\nReferencia do imóvel: ");
+                    MostrarDetalheDoImovel(in.next());
+                    break;
+                case 5: InserirNovoImovel();
+                break;
+                case 6: 
+                    System.out.print("\nRemover imóvel\nReferencia do imóvel: ");
+                    RemoverImovel(in.next());
+                    break;
+                case 0: break;
+                default: System.out.println("Opção inválida!");
+            }
+            } catch (NoSuchElementException e) {
+                e.printStackTrace();
+            }
+        } while (op != 0);
         in.close();
     }
 
@@ -147,7 +147,7 @@ public class Imovel implements Serializable {
         // }
     }
 
-	private static void MostrarDetalheDoImovel(String ref) throws IOException {
+	private static void MostrarDetalheDoImovel(String ref) {
         // boolean achou = false;
         // File f = new File(NOME_ARQUIVO);
         // FileReader fr = new FileReader(f);
