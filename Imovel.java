@@ -27,7 +27,7 @@ public class Imovel implements Serializable {
     public static final String NOME_ARQUIVO = "." + "/imovel.csv";
 
 	public static void main(final String[] args) {
-        // Scanner in = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         // int op = 0;
         // do {
         // try {
@@ -52,17 +52,20 @@ public class Imovel implements Serializable {
         // break;
         // case 5: InserirNovoImovel();
         // break;
-        // case 6: RemoverImovel();
-        // break;
+        // case 6: 
+        //     System.out.print("\nRemover imóvel\nReferencia do imóvel: ");
+        //     RemoverImovel(in.nextInt());
+        //     break;
         // case 0: break;
         // default: System.out.println("Opção inválida!");
         // }
         // } catch (NoSuchElementException e) {
-        // e.printStackTrace();
+        //     e.printStackTrace();
         // }
         // } while (op != 0);
-        // in.close();
-        RemoverImovel();
+        System.out.print("\nRemover imóvel\nReferencia do imóvel: ");
+        RemoverImovel(in.next());
+        in.close();
     }
 
     private static void ImportarImoveis() {
@@ -200,22 +203,20 @@ public class Imovel implements Serializable {
 	}
 
 	private static void RemoverImovel(String ref) {
+        boolean achou = false;
+        ObjectInputStream input = null;
+        ObjectOutputStream output = null;
         try {
-            Files.copy(Path.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
             input = new ObjectInputStream(Files.newInputStream(Paths.get("copia.csv")));
             output = new ObjectOutputStream(Files.newOutputStream(Paths.get(NOME_ARQUIVO)));
-            boolean achou = false;
-            while (trea) {
+            while (true) {
                 Imovel i = (Imovel) input.readObject();
-                String[] tokens = br.readLine().split(",");
                 if (!ref.equals(i.referencia)) {
-                    output.writeObject(c);
+                    output.writeObject(i);
                 } else {
                     achou = true;
                 }
-            }
-            if (!achou) {
-                System.out.println();
             }
         } catch (EOFException e) {
             if (achou) {
