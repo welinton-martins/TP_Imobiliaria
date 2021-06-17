@@ -80,14 +80,12 @@ public class Imovel implements Serializable {
             output = new ObjectOutputStream(Files.newOutputStream(path));
             while (br.ready()) {                
                 String[] tokens = br.readLine().split(",");
-                if (!(tokens[0] instanceof String)) {
-                    System.out.println(tokens[0]);
+                if (!tokens[0].equals("Referencia")) {
                     i.referencia = Integer.parseInt(tokens[0]);
                     i.tipo = tokens[1];
                     i.quartos = Integer.parseInt(tokens[2]);
                     i.bairro = tokens[3];
                     i.valor = Float.parseFloat(tokens[4]);
-                    System.out.println(i);
                     output.writeObject(i);
                 }
             }
