@@ -56,7 +56,7 @@ public class Imovel implements Serializable {
                 break;
                 case 6: 
                     System.out.print("\nRemover imóvel\nReferencia do imóvel: ");
-                    RemoverImovel(in.next());
+                    RemoverImovel(in.nextInt());
                     break;
                 case 0: break;
                 default: System.out.println("Opção inválida!");
@@ -186,9 +186,9 @@ public class Imovel implements Serializable {
             i.bairro = in.nextLine();
             System.out.print("Valor: R$ ");
             i.valor = in.nextFloat();
-            Path path = Paths.get(NOME_ARQUIVO);
+            Path path = Paths.get("imovel.dat");
             if (Files.exists(path)) {
-                FileOutputStream fos = new FileOutputStream(NOME_ARQUIVO, true);
+                FileOutputStream fos = new FileOutputStream("imovel.dat", true);
                 AppendingObjectOutputStream output = new AppendingObjectOutputStream(fos);
                 output.writeObject(i);
                 output.close();
@@ -202,17 +202,17 @@ public class Imovel implements Serializable {
         }
 	}
 
-	private static void RemoverImovel(String ref) {
+	private static void RemoverImovel(int ref) {
         boolean achou = false;
         ObjectInputStream input = null;
         ObjectOutputStream output = null;
         try {
-            Files.copy(Paths.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
-            input = new ObjectInputStream(Files.newInputStream(Paths.get("copia.csv")));
-            output = new ObjectOutputStream(Files.newOutputStream(Paths.get(NOME_ARQUIVO)));
+            Files.copy(Paths.get("imovel.dat"), Paths.get("imovel.bak"), StandardCopyOption.REPLACE_EXISTING);
+            input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.bak")));
+            output = new ObjectOutputStream(Files.newOutputStream(Paths.get("imovel.dat")));
             while (true) {
                 Imovel i = (Imovel) input.readObject();
-                if (!ref.equals(i.referencia)) {
+                if (i.referencia != ref) {
                     output.writeObject(i);
                 } else {
                     achou = true;
