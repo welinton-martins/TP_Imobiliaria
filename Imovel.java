@@ -202,31 +202,43 @@ public class Imovel implements Serializable {
 	private static void RemoverImovel(String ref) {
         try {
             Files.copy(Path.get(NOME_ARQUIVO), Paths.get("copia.csv"), StandardCopyOption.REPLACE_EXISTING);
-            input = new ObjectInputStream(Files.newInputStream(Paths.get("imoveis.bak")));
-            output = new ObjectOutputStream(Files.newOutputStream(Paths.get"imovel.csv))
-            // File f = new File("copia.csv");
-            // FileReader fr = new FileReader(f);
-            // BufferedReader br = new BufferedReader(fr);
-            // FileWriter fw = new FileWriter(NOME_ARQUIVO);
-            // BufferedWriter bw = new BufferedWriter(fw);
+            input = new ObjectInputStream(Files.newInputStream(Paths.get("copia.csv")));
+            output = new ObjectOutputStream(Files.newOutputStream(Paths.get(NOME_ARQUIVO)));
             boolean achou = false;
-            while (br.ready()) {
+            while (trea) {
+                Imovel i = (Imovel) input.readObject();
                 String[] tokens = br.readLine().split(",");
-                if (!ref.equals(tokens[0])) {
-                    bw.write(String.format("%s,%s,%s,%s,%s\n", tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
+                if (!ref.equals(i.referencia)) {
+                    output.writeObject(c);
                 } else {
                     achou = true;
                 }
             }
             if (!achou) {
+                System.out.println();
+            }
+        } catch (EOFException e) {
+            if (achou) {
+                System.out.println("Imovel excluido com sucesso");
+            } else {
                 System.out.println("\nImovel nao encontrado!");
             }
-            // br.close();
-            // fr.close();
-            // bw.close();
-            // br.close();
-        } catch (Exception e) {
-            //TODO: handle exception
+        } catch (IOException e) {
+            System.out.println("Erro ao fazer a copia do arquivo!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Erro de leitura!");
+        } finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+                if (output != null) {
+                    output.close();
+                }
+            } catch (Exception e) {
+                System.out.println("Erro ao fechar os arquivos!");
+            }
         }
         
 	}
