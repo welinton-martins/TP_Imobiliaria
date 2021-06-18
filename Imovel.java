@@ -24,7 +24,7 @@ public class Imovel implements Serializable {
 	private String bairro;
 	private float valor;
 
-    public static final String NOME_ARQUIVO = "." + "/imovel.csv";
+    public static final String NOME_ARQUIVO = "";
 
 	public static void main(final String[] args) {
         Scanner in = new Scanner(System.in);
@@ -69,18 +69,21 @@ public class Imovel implements Serializable {
     }
 
     private static void ImportarImoveis() {
+        Scanner in new Scanner(System.in);
         Imovel i = new Imovel();
         File arquivoCSV = null;
         ObjectOutputStream output = null;
+        System.out.print("Nome do arquivo csv: ");
         try {
-            arquivoCSV = new File("imovel.csv");
+            NOME_ARQUIVO = in.nextLine();
+            arquivoCSV = new File(NOME_ARQUIVO);
             FileReader fr = new FileReader(arquivoCSV);
             BufferedReader br = new BufferedReader(fr);
-            Path path = Paths.get("imovel.dat");
+            Path path = Paths.get(NOME_ARQUIVO + ".dat");
             output = new ObjectOutputStream(Files.newOutputStream(path));
             while (br.ready()) {                
                 String[] tokens = br.readLine().split(",");
-                if (!tokens[0].equals("Referencia")) {
+                if (!tokens[0].startsWith("")) {
                     i.referencia = Integer.parseInt(tokens[0]);
                     i.tipo = tokens[1];
                     i.quartos = Integer.parseInt(tokens[2]);
@@ -101,9 +104,9 @@ public class Imovel implements Serializable {
     }
 
     private static void ListarImoveis() {
-        /*ObjectInputStream input = null;
+        ObjectInputStream input = null;
         try {
-            input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.dat")));
+            input = new ObjectInputStream(Files.newInputStream(Paths.get(NOME_ARQUIVO + ".dat")));
             while (true) {
                 Imovel i = (Imovel) input.readObject();
                 System.out.println(i.referencia + i.bairro);
@@ -122,7 +125,7 @@ public class Imovel implements Serializable {
                     System.out.println("Erro ao fechar arquivo");
                 }
             }
-        }*/
+        }
     }
 
 	private static void MostrarDetalheDoImovel(String ref) {
