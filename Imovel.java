@@ -108,7 +108,24 @@ public class Imovel implements Serializable {
 
 
     private static void ExportarImoveis() {
-        
+        Scanner in = new Scanner(System.in);
+        ObjectInputStream input = null;
+        System.out.println("Digite o nome do arquivo que sera exportado: \n");
+        try {
+            FileWriter fw = new FileWriter(in.nextLine());
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.dat")));
+            while (true) {
+                Imovel i = (Imovel) input.readObject();
+                bw.write(String.format("%d, %s, %d, %s, %.2f\n", i.referencia, i.tipo, i.quartos, i.bairro, i.valor));
+            }
+        } catch (IOException e) {
+            System.out.println("Erro de leitura");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Tipo de objeto invalido!");
+        }
+
     }
 
 
