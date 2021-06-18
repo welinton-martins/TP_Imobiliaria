@@ -1,3 +1,11 @@
+/*
+    Autores: 
+    Welinton Martins de Jesus
+    Alexandre Santos Resende
+    Gabriel Ramos Agrela
+    Luiz Henrique Amaro Brito
+*/
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
