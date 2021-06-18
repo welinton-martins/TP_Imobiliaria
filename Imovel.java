@@ -73,26 +73,33 @@ public class Imovel implements Serializable {
     private static void ImportarImoveis() {
         Imovel i = new Imovel();
         File arquivoCSV = null;
+        String[] tokens;
         try {
             arquivoCSV = new File("imovel.csv");
             FileReader fr = new FileReader(arquivoCSV);
             BufferedReader br = new BufferedReader(fr);
-
-            ObjectOutputStream output = new ObjectOutputStream(Files.newOutputStream(Paths.get("imovelTeste.dat")));
+            Path path = Paths.get("imovel.dat");
             br.readLine();
-            FileOutputStream fos = new FileOutputStream("imovelTeste.dat", true);
             while (br.ready()) {
-                String[] tokens = br.readLine().split(",");
+                tokens = br.readLine().split(",");                
                 i.referencia = Integer.parseInt(tokens[0]);
                 i.tipo = tokens[1];
                 i.quartos = Integer.parseInt(tokens[2]);
                 i.bairro = tokens[3];
                 i.valor = Float.parseFloat(tokens[4]);
-                AppendingObjectOutputStream importBin = new AppendingObjectOutputStream(fos);
-                importBin.writeObject(i);
+                if (Files.exists(path)) {
+                    FileOutputStream fos = new FileOutputStream("imovel.dat", true); 
+                    AppendingObjectOutputStream output = new AppendingObjectOutputStream(fos);                 
+                    output.writeObject(i);
+                    output.close();
+                } else {
+                    ObjectOutputStream output = new ObjectOutputStream(Files.newOutputStream(path));
+                    output.writeObject(i);
+                    output.close();
+                }   
+               
             }
             br.close();
-            fos.close();
             //importBin.close();
         } catch (IOException e) {
             System.out.println("Erro de leitura");
