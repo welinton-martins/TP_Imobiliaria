@@ -24,7 +24,7 @@ public class Imovel implements Serializable {
 	private String bairro;
 	private float valor;
 
-    public static final String NOME_ARQUIVO = "";
+    public static final String NOME_ARQUIVO = "." + "/imovel.csv";
 
 	public static void main(final String[] args) {
         Scanner in = new Scanner(System.in);
@@ -50,7 +50,7 @@ public class Imovel implements Serializable {
                 break;
                 case 4: 
                     System.out.print("Detalhes do Imovel\nReferencia do imóvel: ");
-                    MostrarDetalheDoImovel(in.next());
+                    MostrarDetalheDoImovel(in.nextInt());
                     break;
                 case 5: InserirNovoImovel();
                 break;
@@ -58,7 +58,9 @@ public class Imovel implements Serializable {
                     System.out.print("\nRemover imóvel\nReferencia do imóvel: ");
                     RemoverImovel(in.nextInt());
                     break;
-                case 0: break;
+                case 0:
+                    System.out.print("***Ate a proxima***"); 
+                    break;
                 default: System.out.println("Opção inválida!");
             }
             } catch (NoSuchElementException e) {
@@ -69,160 +71,175 @@ public class Imovel implements Serializable {
     }
 
     private static void ImportarImoveis() {
-        Scanner in new Scanner(System.in);
         Imovel i = new Imovel();
         File arquivoCSV = null;
-        ObjectOutputStream output = null;
-        System.out.print("Nome do arquivo csv: ");
         try {
-            NOME_ARQUIVO = in.nextLine();
-            arquivoCSV = new File(NOME_ARQUIVO);
+            arquivoCSV = new File("imovel.csv");
             FileReader fr = new FileReader(arquivoCSV);
             BufferedReader br = new BufferedReader(fr);
-            Path path = Paths.get(NOME_ARQUIVO + ".dat");
-            output = new ObjectOutputStream(Files.newOutputStream(path));
-            while (br.ready()) {                
+
+            ObjectOutputStream output = new ObjectOutputStream(Files.newOutputStream(Paths.get("imovelTeste.dat")));
+            br.readLine();
+            FileOutputStream fos = new FileOutputStream("imovelTeste.dat", true);
+            while (br.ready()) {
                 String[] tokens = br.readLine().split(",");
-                if (!tokens[0].startsWith("")) {
-                    i.referencia = Integer.parseInt(tokens[0]);
-                    i.tipo = tokens[1];
-                    i.quartos = Integer.parseInt(tokens[2]);
-                    i.bairro = tokens[3];
-                    i.valor = Float.parseFloat(tokens[4]);
-                    output.writeObject(i);
-                }
+                i.referencia = Integer.parseInt(tokens[0]);
+                i.tipo = tokens[1];
+                i.quartos = Integer.parseInt(tokens[2]);
+                i.bairro = tokens[3];
+                i.valor = Float.parseFloat(tokens[4]);
+                AppendingObjectOutputStream importBin = new AppendingObjectOutputStream(fos);
+                importBin.writeObject(i);
             }
-            output.close();
             br.close();
+            fos.close();
+            //importBin.close();
         } catch (IOException e) {
             System.out.println("Erro de leitura");
         }
     }
 
-    private static void ExportarImoveis() {
 
+    private static void ExportarImoveis() {
+        
     }
+
 
     private static void ListarImoveis() {
         ObjectInputStream input = null;
-        try {
-            input = new ObjectInputStream(Files.newInputStream(Paths.get(NOME_ARQUIVO + ".dat")));
-            while (true) {
+		try {
+			input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.dat")));
+            System.out.printf("%s %s %15s %s %10s\n", "|Referencia", "|Tipo", "|Quartos", "|Bairro", "|Valor");
+			while (true) {
                 Imovel i = (Imovel) input.readObject();
-                System.out.println(i.referencia + i.bairro);
-            }
-        } catch (EOFException e) {
+				System.out.printf("%10d %6s %12d %10s %14.2f\n", i.referencia, i.tipo, i.quartos, i.bairro, i.valor);
+			}				
+		} catch (EOFException e) {
             System.out.println("Fim dos registros");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Fim dos registros");
-        } catch (IOException e) {
-            System.out.println("Erro de leitura do arquivo");
-        } finally {
-            if (input != null) {
+		} catch (ClassNotFoundException e) {
+			System.out.println("Tipo de objeto invalido!");
+		} catch (IOException e) {
+            System.out.println("Erro de leitura no arquivo");
+		} finally {
+			if (input != null) {
                 try {
                     input.close();
-                } catch (IOException e) {
-                    System.out.println("Erro ao fechar arquivo");
-                }
-            }
-        }
+				} catch (IOException e) {
+                    System.out.println("Erro ao fechar o arquivo!");
+				}
+			}
+		}
     }
 
-	private static void MostrarDetalheDoImovel(String ref) {
-        // boolean achou = false;
-        // File f = new File(NOME_ARQUIVO);
-        // FileReader fr = new FileReader(f);
-        // BufferedReader br = new BufferedReader(fr);
-        // while (br.ready()) {
-        //     String[] tokens = br.readLine().split(",");
-        //     if (ref.equals(tokens[0])) {
-        //         System.out.println("Tipo: " + tokens[1]);
-        //         System.out.println("Quartos: " + tokens[2]);
-        //         System.out.println("Bairros: " + tokens[3]);
-        //         System.out.printf("Valor: R$ %.2f\n", Float.parseFloat(tokens[4]));
-        //         achou = true;
-        //         break;
-        //     }
-        // }
-        // if (!achou) {
-        //     System.out.println("\nImovel nao encontrado!");
-        // }
-        // br.close();
-        // fr.close();
+    
+	private static void MostrarDetalheDoImovel(int ref) {
+        ObjectInputStream input = null;
+		try {
+            input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.dat")));
+            System.out.printf("%s %s %15s %s %10s\n", "|Referencia", "|Tipo", "|Quartos", "|Bairro", "|Valor");
+			while (true) {
+                Imovel i = (Imovel) input.readObject();
+				if (i.referencia == ref) {
+                    System.out.printf("%10d %6s %12d %10s %14.2f\n", i.referencia, i.tipo, i.quartos, i.bairro, i.valor);
+                    
+                    return;
+				}
+			}
+		} catch (EOFException e) {
+			System.out.println("Erro: conta nao encontrada!");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Tipo de objeto invalido!");
+		} catch (IOException e) {
+			System.out.println("Erro de leitura no arquivo");
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					System.out.println("Erro ao fechar o arquivo!");
+				}
+			}
+		}
 	}
+
 
 	private static void InserirNovoImovel() {
         Imovel i = new Imovel();
         try {
             Scanner in = new Scanner(System.in);
-            System.out.print("Referencia: ");
+            System.out.println("Numero Referencia: ");
             i.referencia = in.nextInt();
-            System.out.print("Tipo: ");
             in.nextLine();
+            System.out.println("Tipo: ");
             i.tipo = in.nextLine();
-            System.out.print("Quartos: ");
+            System.out.println("Quartos: ");
             i.quartos = in.nextInt();
-            System.out.print("Bairro: ");
             in.nextLine();
+            System.out.println("Bairro: ");
             i.bairro = in.nextLine();
-            System.out.print("Valor: R$ ");
+            System.out.println("Valor: R$ ");
             i.valor = in.nextFloat();
             Path path = Paths.get("imovel.dat");
             if (Files.exists(path)) {
                 FileOutputStream fos = new FileOutputStream("imovel.dat", true);
-                AppendingObjectOutputStream output = new AppendingObjectOutputStream(fos);
-                output.writeObject(i);
-                output.close();
-            } else {
-                ObjectOutputStream output = new ObjectOutputStream(Files.newOutputStream(path));
-                output.writeObject(i);
-                output.close();
+				AppendingObjectOutputStream output = new AppendingObjectOutputStream(fos);				
+				output.writeObject(i);
+				output.close();
+                in.close();
             }
-            in.close();
+            else {
+                ObjectOutputStream output = new ObjectOutputStream(Files.newOutputStream(path));
+				output.writeObject(i);
+				output.close();
+                in.close();
+            }
+            System.out.print("Imovel inserido com sucesso");
         } catch (IOException e) {
-            System.out.println("Erro de escrita no arquivo!");
+            System.out.print("Erro de escrita no arquivo!");
         }
 	}
 
+
 	private static void RemoverImovel(int ref) {
-        boolean achou = false;
-        ObjectInputStream input = null;
-        ObjectOutputStream output = null;
-        try {
-            Files.copy(Paths.get("imovel.dat"), Paths.get("imovel.bak"), StandardCopyOption.REPLACE_EXISTING);
-            input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.bak")));
-            output = new ObjectOutputStream(Files.newOutputStream(Paths.get("imovel.dat")));
-            while (true) {
-                Imovel i = (Imovel) input.readObject();
-                if (i.referencia != ref) {
-                    output.writeObject(i);
-                } else {
-                    achou = true;
-                }
-            }
-        } catch (EOFException e) {
-            if (achou) {
-                System.out.println("Imovel excluido com sucesso");
-            } else {
-                System.out.println("\nImovel nao encontrado!");
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao fazer a copia do arquivo!");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("Erro de leitura!");
-        } finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-                if (output != null) {
-                    output.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Erro ao fechar os arquivos!");
-            }
-        }
-        
+        boolean achei = false;
+		ObjectInputStream input = null;
+		ObjectOutputStream output = null;
+		try {			
+			Files.copy(Paths.get("imovel.dat"), Paths.get("imovel.bak"), StandardCopyOption.REPLACE_EXISTING);
+			input = new ObjectInputStream(Files.newInputStream(Paths.get("imovel.bak")));
+			output = new ObjectOutputStream(Files.newOutputStream(Paths.get("imovel.dat")));
+			while (true) {
+				Imovel i = (Imovel) input.readObject();
+				if (i.referencia != ref) {
+					output.writeObject(i);
+				}
+				else {
+					achei = true;
+				}
+			}
+		} catch (EOFException e) {
+			if (achei) {
+				System.out.println("Conta excluida com sucesso");
+			}
+			else {
+				System.out.println("Erro: conta nao encontrada!");
+			}
+		} catch (IOException e) {
+			System.out.println("Erro ao fazer a copia do arquivo!");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("Erro de leitura!");
+		} finally {
+			try {
+				if (input != null) {
+					input.close();
+				}
+				if (output != null) {
+					output.close();
+				}
+			} catch (IOException e) {
+				System.out.println("Erro ao fechar os arquivos!");
+			}
+		}
 	}
 }
